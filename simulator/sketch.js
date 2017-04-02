@@ -238,6 +238,7 @@ var context = {};
 
 function keyPressed() {
   context.global.keyCode = keyCode;
+  sendit(keyCode);
 }
 
 function p5color(icolor) {
@@ -331,8 +332,8 @@ function setup() {
   context.global = {};
   context.global.keyCode = 0;
   createCanvas(windowWidth, windowHeight, WEBGL);
-  //wsConnect();
-  initgameengine();
+  wsConnect();
+  //initgameengine();
   frameRate(10);
 }
 
