@@ -26,13 +26,13 @@ ws.on('open', function () {
 ws.on('message', function (message) {
 
     lights = JSON.parse(message);
-
     for (var i in lights) {
         if (lights[i].rgb >= 0) {
             if (lights[i].bright == 0) {
-                Yeelight.cfcommand(lights[i].id, 1, 2, lights[i].time * 100 + ',' + 1 + ',' + lights[i].rgb + ',' + 1);
+                Yeelight.cfcommand(lights[i].id.toString(), 1, 2, lights[i].time * 10 + ',' + 1 + ',' + lights[i].rgb + ',' + 1);
+                //Yeelight.cfcommand(lights[i].id.toString(), 1, 2, lights[i].time + ',' + 1 + ',' + lights[i].rgb + ',' + 1);
             } else {
-                Yeelight.scenecommand(lights[i].id, lights[i].time * 100 + ',' + 1 + ',' + lights[i].rgb + ',' + 100);
+                Yeelight.scenecommand(lights[i].id.toString(), lights[i].time * 100 + ',' + 1 + ',' + lights[i].rgb + ',' + 100);
             }
         }
     }
