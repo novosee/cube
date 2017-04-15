@@ -108,32 +108,46 @@ function initgameengine(config) {
         }
     }
 
+    function initmode(mode) {
+        cubeCore.lights.forEach(function (element) {
+
+            element.rgb = 0;
+            element.bright = 0;
+            element.time = 10;
+            element.timeCount = 10;
+        }
+        );
+        cubeCore.mode = mode;
+    }
     var spiritArray = [];
 
     function ondata() {
 
         switch (context.global.keyCode) {
             case CONST.LEFT_ARROW:
+
+                if (cubeCore.mode != CONST.GAME) {
+                    initmode(CONST.GAME);
+                }
                 spiritArray.push(new Spirit(randomrgbcolor()));
                 spiritArray.forEach(function (spirit) {
                     spirit.isforward = true;
                 });
-                cubeCore.mode = CONST.GAME;
                 context.global.keyCode = 0;
-                console.log('LEFT');
                 break;
 
             case CONST.RIGHT_ARROW:
+                if (cubeCore.mode != CONST.GAME) {
+                    initmode(CONST.GAME);
+                }
                 spiritArray.forEach(function (spirit) {
                     spirit.isforward = false;
                 });
-                cubeCore.mode = CONST.GAME;
                 context.global.keyCode = 0;
-                console.log('RIGHT');
                 break;
 
             case CONST.DOWN_ARROW:
-                cubeCore.mode = CONST.GAME;
+                //cubeCore.mode = CONST.GAME;
                 context.global.keyCode = 0;
                 console.log('DOWN');
                 break;
@@ -170,7 +184,7 @@ function initgameengine(config) {
                 });
 
                 if (spiritArray.length == 0) {
-                    cubeCore.mode = CONST.BREATH;
+                    initmode(CONST.BREATH);
                     cubeCore.count = 10;
                 }
 
@@ -196,7 +210,7 @@ function initgameengine(config) {
 
                 cubeCore.count--;
                 if (cubeCore.count < 0) {
-                    cubeCore.mode = CONST.STAR;
+                    initmode(CONST.STAR);
                     cubeCore.count = 60;
                 }
 
@@ -222,15 +236,7 @@ function initgameengine(config) {
 
                 cubeCore.count--;
                 if (cubeCore.count < 0) {
-                    cubeCore.mode = CONST.BREATH;
-                    cubeCore.lights.forEach(function (element) {
-
-                        element.rgb = 0;
-                        element.bright = 0;
-                        element.time = 10;
-                        element.timeCount = 10;
-                    }
-                    );
+                    initmode(CONST.BREATH);
                     cubeCore.count = 30;
                 }
 
