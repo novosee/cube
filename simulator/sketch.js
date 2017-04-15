@@ -81,8 +81,8 @@ function initgameengine(config) {
         x: 4, y: 2, z: 5
       }
     ],
-    mode: CONST.BREATH,
-    count: 10,
+    mode: CONST.STAR,
+    count: 21,
   }
 
   function randomrgbcolor() {
@@ -114,6 +114,7 @@ function initgameengine(config) {
 
     switch (context.global.keyCode) {
       case CONST.LEFT_ARROW:
+        spiritArray.push(new Spirit(randomrgbcolor()));
         spiritArray.forEach(function (spirit) {
           spirit.isforward = true;
         });
@@ -132,7 +133,6 @@ function initgameengine(config) {
         break;
 
       case CONST.DOWN_ARROW:
-        spiritArray.push(new Spirit(randomrgbcolor()));
         cubeCore.mode = CONST.GAME;
         context.global.keyCode = 0;
         console.log('DOWN');
@@ -196,18 +196,42 @@ function initgameengine(config) {
 
         cubeCore.count--;
         if (cubeCore.count < 0) {
-          cubeCore.mode = CONST.BREATH;
-          cubeCore.count = 10;
+          cubeCore.mode = CONST.STAR;
+          cubeCore.count = 60;
         }
 
         break;
       case CONST.STAR:
-        console.log("STAR");
+
+        cubeCore.lights.forEach(function (element) {
+          if (element.timeCount > 0) {
+            element.timeCount = element.timeCount - 10;
+            element.rgb = -Math.abs(element.rgb);;
+          } else {
+            if (element.bright > 0) {
+              element.rgb = Math.abs(element.rgb);
+              element.bright = 0;
+            } else {
+              element.rgb = randomrgbcolor();
+              element.bright = 100;
+            }
+            element.time = Math.floor(Math.random() * 40);
+            element.timeCount = element.time;
+          }
+        });
 
         cubeCore.count--;
         if (cubeCore.count < 0) {
           cubeCore.mode = CONST.BREATH;
-          cubeCore.count = 10;
+          cubeCore.lights.forEach(function (element) {
+
+            element.rgb = 0;
+            element.bright = 0;
+            element.time = 10;
+            element.timeCount = 10;
+          }
+          );
+          cubeCore.count = 30;
         }
 
         break;
@@ -253,7 +277,7 @@ function senddata(lights) {
   lights.forEach(function (element) {
     if (element.rgb >= 0) {
       if (element.bright == 0) {
-        console.log("bright 0");
+        //console.log("bright 0");
         cubeTable[element.x][element.y][element.z].eColor = color(255, 255, 255, 5);
       } else {
         cubeTable[element.x][element.y][element.z].eColor = p5color(element.rgb);
@@ -332,8 +356,8 @@ function setup() {
   context.global = {};
   context.global.keyCode = 0;
   createCanvas(windowWidth, windowHeight, WEBGL);
-  wsConnect();
-  //initgameengine();
+  //wsConnect();
+  initgameengine();
   frameRate(10);
 }
 
