@@ -9,6 +9,7 @@ function initgameengine(config) {
     GAME: 1,
     STAR: 2,
     BREATH: 3,
+    SINGLECOLOR: 4,
     BLACK: 0,
     LEFT_ARROW: 37,
     RIGHT_ARROW: 39,
@@ -184,11 +185,39 @@ function initgameengine(config) {
         });
 
         if (spiritArray.length == 0) {
-          initmode(CONST.BREATH);
-          cubeCore.count = 10;
+          initmode(CONST.SINGLECOLOR);
+          cubeCore.count = 20;
         }
 
         break;
+      case CONST.SINGLECOLOR:
+        var singleColor = randomrgbcolor();
+
+        cubeCore.lights.forEach(function (element) {
+          if (element.timeCount) {
+            element.timeCount = element.timeCount - 10;
+            element.rgb = -Math.abs(element.rgb);;
+          } else {
+            if (element.bright > 0) {
+              element.rgb = Math.abs(element.rgb);
+              element.bright = 0;
+            } else {
+              element.rgb = singleColor;
+              element.bright = 100;
+            }
+            element.time = 30;
+            element.timeCount = 30;
+          }
+        });
+
+        cubeCore.count--;
+        if (cubeCore.count < 0) {
+          initmode(CONST.BREATH);
+          cubeCore.count = 30;
+        }
+
+        break;
+
       case CONST.BREATH:
 
         cubeCore.lights.forEach(function (element) {
@@ -236,7 +265,7 @@ function initgameengine(config) {
 
         cubeCore.count--;
         if (cubeCore.count < 0) {
-          initmode(CONST.BREATH);
+          initmode(CONST.SINGLECOLOR);
           cubeCore.count = 30;
         }
 
